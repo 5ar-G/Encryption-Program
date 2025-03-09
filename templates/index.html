@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encryption Program</title>
+    <style>
+        /* General Styles */
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            margin-top: 5vh;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+
+        }
+
+        body {
+            padding: 4rem;
+        }
+
+
+
+
+
+        /* Glitching Background */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            grid-auto-rows: 40px;
+            gap: 0;
+            z-index: -1;
+        }
+
+        .text {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5em;
+            font-family: Arial, sans-serif;
+            transition: color 0.05s ease;
+            background-color: #000;
+            color: #000;
+            box-sizing: border-box;
+        }
+
+        /* Encryption UI */
+        .container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            background: grey;
+            padding: 3rem;
+            padding-bottom: 5rem;
+            width: 100%;
+            border: 10px solid #000000;
+            border-radius: 20px;
+            box-shadow: .5vw .5vw 0 rgb(255, 255, 255, 100%), 0 0vw 2.5vw rgba(253, 253, 253, 0.747);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .container:hover {
+            border: 10px solid #ffffff;
+            box-shadow: 0px 0px 0 rgb(0, 0, 0), 0 0vw 0vw rgb(0, 0, 0);
+            transform: translateX(.7vw) translateY(.7vw);
+        }
+
+        h1 {
+            color: black;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-top: -2rem;
+            text-decoration: underline;
+        }
+
+        h2 {
+            color: black;
+            margin-top: 20px;
+        }
+
+        form {
+            margin: 20px 0;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 20px 0 20px 0;
+            margin: 10px 0;
+            border: 3px solid #000000;
+        }
+
+        button {
+            width: 40%;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            background-color: #000000;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s ease-in-out;
+            border: 5px solid #ffffff;
+            box-shadow: .3vw .3vw 0 rgb(255, 255, 255, 100%), 0 0vw 2vw rgba(0, 0, 0, 0.747);
+        }
+
+        button:hover {
+            background-color: #ffffff;
+            color: black;
+            border: 5px solid #000000;
+            box-shadow: 0px 0px 0 rgb(0, 0, 0), 0 0vw 0vw rgb(0, 0, 0);
+            transform: translateX(.3vw) translateY(.3vw);
+        }
+
+        #decryptButton {
+            background-color: #007bff;
+            margin-top: 10px;
+        }
+
+        #decryptButton:hover {
+            background-color: #0056b3;
+        }
+
+        ul {
+            list-style: none;
+            padding: 10px;
+            text-align: left;
+        }
+
+        li {
+            background: #ffffff;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 15px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Custom Cursor -->
+    <div class="cursor" id="cursor"></div>
+
+    <!-- Glitching Background -->
+    <div class="background" id="background"></div>
+
+    <!-- Encryption Form -->
+    <div class="container">
+        <h1 id="title">Encryption Program</h1>
+
+        <div id="encryptForm">
+            <h2>↓Encrypt Text↓</h2>
+            <form method="POST">
+                <input type="text" name="plain_text" placeholder="Enter text to encrypt" required>
+                <button type="submit">Encrypt</button>
+            </form>
+        </div>
+
+        <div id="decryptForm" style="display: none;">
+            <h2>Decrypt Text</h2>
+            <form method="POST">
+                <input type="text" name="cypher_text" placeholder="Enter text to decrypt" required>
+                <button type="submit">Decrypt</button>
+            </form>
+        </div>
+
+
+
+        <h2>Encrypted Messages</h2>
+        <ul>
+            {% for entry in encrypted_texts %}
+            <li>{{ entry['plain_text'] }} → {{ entry['encrypted_text'] }}</li>
+            {% endfor %}
+        </ul>
+
+        <button id="toggleButton" onclick="toggleMode(true)">Decrypt a Message</button>
+    </div>
+
+    <script>
+        function toggleMode(isDecrypt) {
+            if (isDecrypt) {
+                document.getElementById("title").innerText = "Decryption Program";
+                document.getElementById("encryptForm").style.display = "none";
+                document.getElementById("decryptForm").style.display = "block";
+                document.getElementById("toggleButton").innerText = "Encrypt a Message";
+                document.getElementById("toggleButton").setAttribute("onclick", "toggleMode(false)");
+            } else {
+                document.getElementById("title").innerText = "Encryption Program";
+                document.getElementById("encryptForm").style.display = "block";
+                document.getElementById("decryptForm").style.display = "none";
+                document.getElementById("toggleButton").innerText = "Decrypt a Message";
+                document.getElementById("toggleButton").setAttribute("onclick", "toggleMode(true)");
+            }
+        }
+
+        const numElements = 1300;
+        const background = document.getElementById('background');
+        const cursor = document.getElementById('cursor');
+        const words = ["CODE", "GLITCH", "ERROR", "DATA", "HELLO", "WORLD", "HACK", "AI", "VOID", "BUG"];
+
+        function getRandomChar() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+            return chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+
+        function getRandomColor() {
+            const colors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF", "#FFFFFF"];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        function getRandomWord() {
+            return words[Math.floor(Math.random() * words.length)];
+        }
+
+        function createTextElement() {
+            const div = document.createElement('div');
+            div.className = 'text';
+            div.innerText = getRandomWord();
+            return div;
+        }
+
+        for (let i = 0; i < numElements; i++) {
+            background.appendChild(createTextElement());
+        }
+
+        document.querySelectorAll('.text').forEach(el => {
+            el.addEventListener('mouseover', () => {
+                let iterations = 0;
+                const interval = setInterval(() => {
+                    el.innerText = el.innerText
+                        .split('')
+                        .map(() => getRandomChar())
+                        .join('');
+                    el.style.color = getRandomColor();
+                    iterations++;
+
+                    if (iterations > 5) {
+                        clearInterval(interval);
+                        el.innerText = getRandomWord();
+                        el.style.color = "#FFFFFF";
+                    }
+                }, 50);
+            });
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = `${e.clientX}px`;
+            cursor.style.top = `${e.clientY}px`;
+        });
+
+    </script>
+</body>
+
+</html>
